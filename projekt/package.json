@@ -1,0 +1,21 @@
+{
+  "name": "LAB 11 - foodies",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.0.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/estree": "^1.0.8",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "^15.0.4"
+  }
+}
