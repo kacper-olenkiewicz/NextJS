@@ -39,19 +39,3 @@
   margin: 0;
   padding: 0;
 }
-
-.nav a {
-  padding: 0.6rem 1.3rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 0.95rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(6px);
-}
-
-.nav a:hover {
-  background: #ffffff;
-  color: #800080;
-}

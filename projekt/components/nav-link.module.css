@@ -1,0 +1,23 @@
+.link {
+  display: inline-block;
+  padding: 0.6rem 1.3rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.link:hover {
+  background: #ffffff;
+  color: #800080;
+}
+
+.active {
+  background: #ffffff;
+  color: #8a2be2;
+  box-shadow: 0 0 1.5rem rgba(255, 255, 255, 0.4);
+}
