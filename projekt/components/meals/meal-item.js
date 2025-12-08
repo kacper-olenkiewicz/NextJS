@@ -13,7 +13,6 @@ export default function MealItem({ title, slug, image, summary, creator }) {
             alt={title}
             fill
             sizes="(max-width: 900px) 100vw, 22rem"
-            priority={slug === 'juicy-cheese-burger'}
           />
         </div>
         <div className={classes.headerText}>

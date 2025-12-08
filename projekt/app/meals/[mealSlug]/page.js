@@ -34,7 +34,7 @@ export default function MealDetailsPage({ params }) {
             by {meal.creator}{' '}
             <span>
               (
-              <a href={`mailto:${meal.creatorEmail}`}>{meal.creatorEmail}</a>
+              <a href={`mailto:${meal.creator_email}`}>{meal.creator_email}</a>
               )
             </span>
           </p>
