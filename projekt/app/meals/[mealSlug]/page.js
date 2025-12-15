@@ -1,11 +1,31 @@
+import fs from 'fs';
+import path from 'path';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 
 import { getMeal } from '@/lib/meals';
 import classes from './page.module.css';
 
-export default function MealDetailsPage({ params }) {
-  const meal = getMeal(params.mealSlug);
+const debugLogPath = path.join(process.cwd(), 'meal-page-debug.log');
+
+export default async function MealDetailsPage({ params }) {
+  const headerList = await headers();
+  const resolvedParams = await params;
+  const debugHeaders = {
+    nextUrl: headerList.get('next-url'),
+    matchedPath: headerList.get('x-matched-path'),
+    invokePath: headerList.get('x-invoke-path'),
+    referer: headerList.get('referer'),
+  };
+  fs.appendFileSync(
+    debugLogPath,
+    `${new Date().toISOString()} params: ${JSON.stringify(
+      resolvedParams
+    )}, headers: ${JSON.stringify(debugHeaders)}\n`
+  );
+
+  const meal = getMeal(resolvedParams.mealSlug);
 
   if (!meal) {
     notFound();

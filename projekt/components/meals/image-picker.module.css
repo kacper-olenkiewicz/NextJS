@@ -1,0 +1,55 @@
+.picker {
+  margin: 1.5rem 0;
+}
+
+.picker label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  color: #b3aea5;
+  font-weight: bold;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.input {
+  display: none;
+}
+
+.controls button {
+  border: 0;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(90deg, #f9572a, #ff9b05);
+  color: #ffffff;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.controls button:hover,
+.controls button:focus {
+  background: linear-gradient(90deg, #fd4715, #f9b241);
+}
+
+.preview {
+  position: relative;
+  width: 12rem;
+  height: 8rem;
+  border: 1px dashed #454952;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  color: #b3aea5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}

@@ -1,0 +1,6 @@
+2025-12-15T10:17:34.540Z params: {}
+2025-12-15T10:19:46.139Z params: {"mealSlug":"homemade-dumplings"}, headers: {"nextUrl":null,"matchedPath":null,"invokePath":null,"referer":"http://localhost:3000/meals/homemade-dumplings"}
+2025-12-15T10:20:20.784Z params: {"mealSlug":"juicy-cheese-burger"}, headers: {"nextUrl":null,"matchedPath":null,"invokePath":null,"referer":"http://localhost:3000/meals"}
+2025-12-15T10:20:35.008Z params: {"mealSlug":"authentic-pizza"}, headers: {"nextUrl":null,"matchedPath":null,"invokePath":null,"referer":"http://localhost:3000/meals"}
+2025-12-15T10:23:37.913Z params: {"mealSlug":"authentic-pizza"}, headers: {"nextUrl":null,"matchedPath":null,"invokePath":null,"referer":"http://localhost:3000/meals/authentic-pizza"}
+2025-12-15T10:23:55.956Z params: {"mealSlug":"spicy-curry"}, headers: {"nextUrl":null,"matchedPath":null,"invokePath":null,"referer":"http://localhost:3000/meals"}
