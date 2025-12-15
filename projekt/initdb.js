@@ -1,5 +1,9 @@
+require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
 
 const dummyMeals = [
   {
