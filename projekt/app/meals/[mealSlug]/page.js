@@ -25,7 +25,7 @@ export default async function MealDetailsPage({ params }) {
     )}, headers: ${JSON.stringify(debugHeaders)}\n`
   );
 
-  const meal = getMeal(resolvedParams.mealSlug);
+  const meal = await getMeal(resolvedParams.mealSlug);
 
   if (!meal) {
     notFound();

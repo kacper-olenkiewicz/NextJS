@@ -1,8 +1,11 @@
 import path from 'path';
 import fs from 'fs/promises';
-import sql from 'better-sqlite3';
+import { createClient } from '@libsql/client';
 
-const db = sql('meals.db');
+const db = createClient({
+  url: process.env.DATABASE_URL,
+  authToken: process.env.DATABASE_AUTH_TOKEN,
+});
 const imagesDir = path.join(process.cwd(), 'public', 'images');
 
 function slugify(text) {
@@ -31,13 +34,17 @@ async function storeImage(imageFile, slug) {
 
 export async function getMeals() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  // throw new Error('Symulowany błąd połączenia z bazą.');
 
-  return db.prepare('SELECT * FROM meals').all();
+  const result = await db.execute('SELECT * FROM meals');
+  return result.rows;
 }
 
-export function getMeal(slug) {
-  return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug);
+export async function getMeal(slug) {
+  const result = await db.execute({
+    sql: 'SELECT * FROM meals WHERE slug = ?',
+    args: [slug],
+  });
+  return result.rows[0] || null;
 }
 
 export async function createMeal(mealData) {
@@ -56,34 +63,31 @@ export async function createMeal(mealData) {
   const slug = slugify(sanitized.title);
   const image = await storeImage(mealData.image, slug);
 
-  const stmt = db.prepare(`
-    INSERT INTO meals (
-      slug,
-      title,
-      image,
-      summary,
-      instructions,
-      creator,
-      creator_email
-    ) VALUES (
-      @slug,
-      @title,
-      @image,
-      @summary,
-      @instructions,
-      @creator,
-      @creator_email
-    )
-  `);
-
   try {
-    stmt.run({
-      slug,
-      image,
-      ...sanitized,
+    await db.execute({
+      sql: `
+        INSERT INTO meals (
+          slug,
+          title,
+          image,
+          summary,
+          instructions,
+          creator,
+          creator_email
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `,
+      args: [
+        slug,
+        sanitized.title,
+        image,
+        sanitized.summary,
+        sanitized.instructions,
+        sanitized.creator,
+        sanitized.creator_email,
+      ],
     });
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+    if (error.message?.includes('UNIQUE constraint failed')) {
       throw new Error('Posiłek o tej nazwie już istnieje.');
     }
     throw error;

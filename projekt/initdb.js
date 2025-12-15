@@ -1,5 +1,7 @@
-const sql = require('better-sqlite3');
-const db = sql('meals.db');
+const { createClient } = require('@libsql/client');
+const db = createClient({
+    url: process.env.DATABASE_URL,
+});
 
 const dummyMeals = [
   {
@@ -164,38 +166,48 @@ const dummyMeals = [
   },
 ];
 
-db.prepare(
-  `
-   CREATE TABLE IF NOT EXISTS meals (
-       id INTEGER PRIMARY KEY AUTOINCREMENT,
-       slug TEXT NOT NULL UNIQUE,
-       title TEXT NOT NULL,
-       image TEXT NOT NULL,
-       summary TEXT NOT NULL,
-       instructions TEXT NOT NULL,
-       creator TEXT NOT NULL,
-       creator_email TEXT NOT NULL
-    )
-`
-).run();
 
-async function initData() {
-  const stmt = db.prepare(`
-      INSERT INTO meals VALUES (
-         null,
-         @slug,
-         @title,
-         @image,
-         @summary,
-         @instructions,
-         @creator,
-         @creator_email
-      )
-   `);
-
-  for (const meal of dummyMeals) {
-    stmt.run(meal);
-  }
+async function createTable() {
+    await db.execute(`
+        CREATE TABLE IF NOT EXISTS meals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            slug TEXT NOT NULL UNIQUE,
+            title TEXT NOT NULL,
+            image TEXT NOT NULL,
+            summary TEXT NOT NULL,
+            instructions TEXT NOT NULL,
+            creator TEXT NOT NULL,
+            creator_email TEXT NOT NULL
+        )
+    `);
 }
 
-initData();
+
+async function initData() {
+    const mealStatements = dummyMeals.map(meal => ({
+        sql: `
+            INSERT INTO meals (slug, title, image, summary, instructions, creator, creator_email)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
+        args: [
+            meal.slug,
+            meal.title,
+            meal.image,
+            meal.summary,
+            meal.instructions,
+            meal.creator,
+            meal.creator_email
+        ]
+    }));
+
+    try {
+        await db.batch(mealStatements);
+        console.log('Dane inicjalizacyjne załadowane do Turso.');
+    } catch (error) {
+        console.error('Błąd podczas ładowania danych inicjalizacyjnych:', error.message);
+    }
+}
+
+await createTable(); 
+await initData();
+;

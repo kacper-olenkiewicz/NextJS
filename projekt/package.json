@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "better-sqlite3": "^12.5.0",
+    "@libsql/client": "^0.15.15",
+    "libsql": "^0.5.22",
     "next": "^16.0.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
