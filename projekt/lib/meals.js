@@ -1,11 +1,7 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { createClient } from '@libsql/client';
+import { prisma } from './prisma';
 
-const db = createClient({
-  url: process.env.DATABASE_URL,
-  authToken: process.env.DATABASE_AUTH_TOKEN,
-});
 const imagesDir = path.join(process.cwd(), 'public', 'images');
 
 function slugify(text) {
@@ -35,16 +31,15 @@ async function storeImage(imageFile, slug) {
 export async function getMeals() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  const result = await db.execute('SELECT * FROM meals');
-  return result.rows;
+  const meals = await prisma.meal.findMany();
+  return meals;
 }
 
 export async function getMeal(slug) {
-  const result = await db.execute({
-    sql: 'SELECT * FROM meals WHERE slug = ?',
-    args: [slug],
+  const meal = await prisma.meal.findUnique({
+    where: { slug },
   });
-  return result.rows[0] || null;
+  return meal;
 }
 
 export async function createMeal(mealData) {
@@ -64,30 +59,19 @@ export async function createMeal(mealData) {
   const image = await storeImage(mealData.image, slug);
 
   try {
-    await db.execute({
-      sql: `
-        INSERT INTO meals (
-          slug,
-          title,
-          image,
-          summary,
-          instructions,
-          creator,
-          creator_email
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-      `,
-      args: [
+    await prisma.meal.create({
+      data: {
         slug,
-        sanitized.title,
+        title: sanitized.title,
         image,
-        sanitized.summary,
-        sanitized.instructions,
-        sanitized.creator,
-        sanitized.creator_email,
-      ],
+        summary: sanitized.summary,
+        instructions: sanitized.instructions,
+        creator: sanitized.creator,
+        creator_email: sanitized.creator_email,
+      },
     });
   } catch (error) {
-    if (error.message?.includes('UNIQUE constraint failed')) {
+    if (error.code === 'P2002') {
       throw new Error('Posiłek o tej nazwie już istnieje.');
     }
     throw error;

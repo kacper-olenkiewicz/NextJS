@@ -4,14 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:seed": "node initdb.js",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
+    "@prisma/adapter-libsql": "^7.1.0",
+    "@prisma/client": "^7.1.0",
     "libsql": "^0.5.22",
     "next": "^16.0.7",
+    "prisma": "^7.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

@@ -1,7 +1,5 @@
-const { createClient } = require('@libsql/client');
-const db = createClient({
-    url: process.env.DATABASE_URL,
-});
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const dummyMeals = [
   {
@@ -167,47 +165,28 @@ const dummyMeals = [
 ];
 
 
-async function createTable() {
-    await db.execute(`
-        CREATE TABLE IF NOT EXISTS meals (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            slug TEXT NOT NULL UNIQUE,
-            title TEXT NOT NULL,
-            image TEXT NOT NULL,
-            summary TEXT NOT NULL,
-            instructions TEXT NOT NULL,
-            creator TEXT NOT NULL,
-            creator_email TEXT NOT NULL
-        )
-    `);
+async function main() {
+  console.log('Rozpoczynam seedowanie...');
+
+  // Usuń istniejące dane
+  await prisma.meal.deleteMany();
+
+  // Dodaj posiłki
+  for (const meal of dummyMeals) {
+    await prisma.meal.create({
+      data: meal,
+    });
+    console.log(`Dodano: ${meal.title}`);
+  }
+
+  console.log('Seedowanie zakończone!');
 }
 
-
-async function initData() {
-    const mealStatements = dummyMeals.map(meal => ({
-        sql: `
-            INSERT INTO meals (slug, title, image, summary, instructions, creator, creator_email)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `,
-        args: [
-            meal.slug,
-            meal.title,
-            meal.image,
-            meal.summary,
-            meal.instructions,
-            meal.creator,
-            meal.creator_email
-        ]
-    }));
-
-    try {
-        await db.batch(mealStatements);
-        console.log('Dane inicjalizacyjne załadowane do Turso.');
-    } catch (error) {
-        console.error('Błąd podczas ładowania danych inicjalizacyjnych:', error.message);
-    }
-}
-
-await createTable(); 
-await initData();
-;
+main()
+  .catch((e) => {
+    console.error('Błąd podczas seedowania:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
