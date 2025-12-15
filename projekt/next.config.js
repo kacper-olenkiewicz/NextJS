@@ -4,7 +4,6 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '5mb',
     },
-    serverComponentsExternalPackages: ['@libsql/client', '@prisma/adapter-libsql'],
   },
 };
 
